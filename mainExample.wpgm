@@ -1,15 +1,16 @@
 import wollok.game.*
-
 import example.pepita
+import player.*
 
-program PepitaGame {
+program Game {
 	game.title("Pepita")
 	game.height(10)
 	game.width(10)
-
-	// add assets in asset folder, for example, for the background
-  // game.boardGround("fondo2.jpg")
-
-
+	game.boardGround("fondo2.jpg")
+	keyboard.left().onPressDo({ player.mover(player.position().left(1)) })
+	keyboard.right().onPressDo({ player.mover(player.position().right(1)) })
+	keyboard.up().onPressDo({ player.mover(player.position().up(1)) })
+	keyboard.down().onPressDo({ player.mover(player.position().down(1)) })
+	game.addVisual(player)
 	game.start()
 }
