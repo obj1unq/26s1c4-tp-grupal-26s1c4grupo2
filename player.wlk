@@ -2,14 +2,15 @@ import wollok.game.*
 
 object player {
   var property position = game.center()
-  
-  method image() = "byteman-arriba.png"
+  var imagenActual = "byteman-arriba.png"
+  method image() = imagenActual
   
   method position() = position
   
-  method mover(nuevaPosicion) {
+  method mover(nuevaPosicion, nuevaImagen) {
     if (self.estaDentroDelTablero(nuevaPosicion)) {
       position = nuevaPosicion
+      imagenActual = nuevaImagen
     }
   }
   
