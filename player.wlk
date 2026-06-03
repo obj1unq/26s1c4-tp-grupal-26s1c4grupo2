@@ -3,7 +3,7 @@ import wollok.game.*
 object player {
   var property position = game.center()
   
-  method image() = "pepita.png"
+  method image() = "byteman-arriba.png"
   
   method position() = position
   
