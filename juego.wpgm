@@ -1,0 +1,12 @@
+import src.juego.*
+import src.jugador.player.player
+
+program Juego {
+  juego.iniciar("ByteMan")
+  
+  // Esto debería hacerse en la inicialización del Jugador que se encuentra en src/jugador/player.wkl
+  keyboard.left().onPressDo({ player.mover(player.position().left(1), "byteman-izquierda.png") })
+	keyboard.right().onPressDo({ player.mover(player.position().right(1), "byteman-derecha.png") })
+	keyboard.up().onPressDo({ player.mover(player.position().up(1), "byteman-arriba.png") })
+	keyboard.down().onPressDo({ player.mover(player.position().down(1), "byteman-abajo.png") })
+}
