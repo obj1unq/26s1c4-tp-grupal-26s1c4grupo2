@@ -1,0 +1,42 @@
+import wollok.game.*
+import src.enemigoprueba.mapa.*
+import src.enemigoprueba.player.*
+import src.enemigoprueba.vision.*
+import src.enemigoprueba.enemigo.*
+
+program juego {
+  game.title("Laberinto")
+  game.width(20)
+  game.height(20)
+  game.cellSize(32)
+  game.boardGround("fondo.jpg")
+
+  mapaBuilder.setup()
+
+  const enemy1 = new Enemigo(
+    position    = game.at(10, 10),
+    campoVision = new VisionSemicircular(radio = 6)
+  )
+
+  const enemy2 = new Enemigo(
+    position    = game.at(1, 6),
+    campoVision = new VisionSemicircular(radio = 6)
+  )
+
+  game.addVisual(player)
+  game.addVisual(enemy1)
+  game.addVisual(enemy2)
+
+
+  keyboard.right().onPressDo({ player.moveRight() })
+  keyboard.left().onPressDo({ player.moveLeft() })
+  keyboard.up().onPressDo({ player.moveUp() })
+  keyboard.down().onPressDo({ player.moveDown() })
+
+  game.onTick(500, "enemies", {
+    enemy1.actualizar(player)
+    enemy2.actualizar(player)
+  })
+
+  game.start()
+}
