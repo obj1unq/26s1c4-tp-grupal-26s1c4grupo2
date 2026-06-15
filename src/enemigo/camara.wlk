@@ -1,25 +1,28 @@
 import wollok.game.*
+import src.utilidades.direcciones.*
 
 class Camara {
-  var imagen = ""
+  const property esAtravesable = false
+  var orientacion = arriba
   const property position
+  var estadoDeImagen = ""
   
-  method image() = imagen
+  method image() = ((("camara-" + orientacion.comoCadena()) + "-") + estadoDeImagen) + ".png"
   
   method manejarEstado(nuevoEstado) {
     nuevoEstado.afectar(self)
   }
   
-  method establecerSigilo() {
-    imagen = "camara-arriba-sigilo.png"
+  method manejarSigilo() {
+    estadoDeImagen = "sigilo"
   }
   
-  method establecerAlarma() {
-    imagen = "camara-arriba-alarma.png"
+  method manejarAlarma() {
+    estadoDeImagen = "alarma"
   }
   
-  method establecerReinicio() {
-    imagen = "camara-arriba-reinicio.png"
+  method manejarReinicio() {
+    estadoDeImagen = "reinicio"
   }
 }
 

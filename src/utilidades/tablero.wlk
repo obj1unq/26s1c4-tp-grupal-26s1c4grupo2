@@ -1,9 +1,9 @@
-import src.jugador.player.player
+import wollok.game.*
 
-class Tablero {
-  const plano
-  
+object tablero {
   method inicializar(nivel) {
+    const plano = nivel.plano()
+
     game.height(plano.alto())
     game.width(plano.ancho())
     self.inicializarCeldas(nivel)
@@ -11,6 +11,8 @@ class Tablero {
   }
   
   method inicializarCeldas(nivel) {
+    const plano = nivel.plano()
+
     plano.coordenadasX().forEach(
       { x => plano.coordenadasY().forEach(
           { y => self.inicializarCelda(nivel, x, y) }
@@ -19,13 +21,17 @@ class Tablero {
   }
   
   method inicializarCelda(nivel, x, y) {
-    self.inicializadorEnCelda(x, y).inicializar(nivel, x, y)
+    const plano = nivel.plano()
+
+    self.inicializadorEnCelda(plano, x, y).inicializar(nivel, x, y)
   }
   
-  method inicializadorEnCelda(x, y) = plano.coordenada(x, y)
+  method inicializadorEnCelda(plano, x, y) = plano.coordenada(x, y)
   
   method traerAdelante(elemento) {
     game.removeVisual(elemento)
     game.addVisual(elemento)
   }
+
+  method elementosEnCelda(posicion) = game.getObjectsIn(posicion)
 }

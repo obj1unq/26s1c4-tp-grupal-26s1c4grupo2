@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class Cable {
+  const property esAtravesable = true
   const property image = "cable.png"
   const property position
 }

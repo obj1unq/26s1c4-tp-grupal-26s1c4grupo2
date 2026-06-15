@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class Armario {
+  const property esAtravesable = true 
   var property image = "armario.png"
   const property position
 }

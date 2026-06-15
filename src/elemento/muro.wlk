@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class Muro {
+  const property esAtravesable = false
   var imagen = ""
   const property position
   
@@ -10,15 +11,15 @@ class Muro {
     nuevoEstado.afectar(self)
   }
   
-  method establecerSigilo() {
+  method manejarSigilo() {
     imagen = "muro-sigilo.png"
   }
   
-  method establecerAlarma() {
+  method manejarAlarma() {
     imagen = "muro-alarma.png"
   }
   
-  method establecerReinicio() {
+  method manejarReinicio() {
     imagen = "muro-reinicio.png"
   }
 }
