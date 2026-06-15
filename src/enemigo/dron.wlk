@@ -1,25 +1,28 @@
 import wollok.game.*
+import src.utilidades.direcciones.*
 
 class Dron {
-  var imagen = ""
+  const property esAtravesable = true
+  var orientacion = arriba
   const property position
+  var estadoDeImagen = ""
   
-  method image() = imagen
+  method image() = ((("dron-" + orientacion.comoCadena()) + "-") + estadoDeImagen) + ".png"
   
   method manejarEstado(nuevoEstado) {
     nuevoEstado.afectar(self)
   }
   
-  method establecerSigilo() {
-    imagen = "dron-izquierda-sigilo.png"
+  method manejarSigilo() {
+    estadoDeImagen = "sigilo"
   }
   
-  method establecerAlarma() {
-    imagen = "dron-izquierda-alarma.png"
+  method manejarAlarma() {
+    estadoDeImagen = "alarma"
   }
   
-  method establecerReinicio() {
-    imagen = "dron-izquierda-reinicio.png"
+  method manejarReinicio() {
+    estadoDeImagen = "reinicio"
   }
 }
 

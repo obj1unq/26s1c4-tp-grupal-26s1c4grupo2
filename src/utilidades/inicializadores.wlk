@@ -1,4 +1,4 @@
-import src.jugador.player.inicializadorJugador
+import src.jugador.player.player
 import src.jugador.items.pem.inicializadorPEM
 import src.jugador.items.virus.inicializadorVirus
 import src.enemigo.camara.inicializadorCamara
@@ -18,7 +18,7 @@ const _ = object {
   }
 }
 
-const a = inicializadorJugador
+const a = player
 
 const b = inicializadorPEM
 

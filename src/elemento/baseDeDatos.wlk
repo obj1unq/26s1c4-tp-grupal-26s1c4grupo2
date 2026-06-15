@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class BaseDeDatos {
+  const property esAtravesable = true 
   const property image = "base-de-datos.png"
   const property position
 }

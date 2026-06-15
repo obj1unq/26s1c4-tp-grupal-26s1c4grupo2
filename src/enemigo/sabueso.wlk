@@ -1,25 +1,28 @@
 import wollok.game.*
+import src.utilidades.direcciones.*
 
 class Sabueso {
-  var imagen = ""
+  const property esAtravesable = true
+  var orientacion = arriba
   const property position
+  var estadoDeImagen = ""
   
-  method image() = imagen
+  method image() = ((("sabueso-" + orientacion.comoCadena()) + "-") + estadoDeImagen) + ".png"
   
   method manejarEstado(nuevoEstado) {
     nuevoEstado.afectar(self)
   }
   
-  method establecerSigilo() {
-    imagen = "sabueso-arriba-sigilo.png"
+  method manejarSigilo() {
+    estadoDeImagen = "sigilo"
   }
   
-  method establecerAlarma() {
-    imagen = "sabueso-arriba-alarma.png"
+  method manejarAlarma() {
+    estadoDeImagen = "alarma"
   }
   
-  method establecerReinicio() {
-    imagen = "sabueso-arriba-reinicio.png"
+  method manejarReinicio() {
+    estadoDeImagen = "reinicio"
   }
 }
 

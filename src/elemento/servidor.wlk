@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class Servidor {
+  const property esAtravesable = false
   var imagen = ""
   const property position
   
@@ -10,15 +11,15 @@ class Servidor {
     nuevoEstado.afectar(self)
   }
   
-  method establecerSigilo() {
+  method manejarSigilo() {
     imagen = "servidor-sigilo.png"
   }
   
-  method establecerAlarma() {
+  method manejarAlarma() {
     imagen = "servidor-alarma.png"
   }
   
-  method establecerReinicio() {
+  method manejarReinicio() {
     imagen = "servidor-reinicio.png"
   }
 }

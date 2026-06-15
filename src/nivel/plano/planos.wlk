@@ -1,8 +1,8 @@
-import inicializadores.*
+import src.utilidades.inicializadores.*
 import plano.Plano
 
 const planoNivel1 = new Plano(
-  estructura = [
+  matriz = [
     [k, k, k, k, k, k, k, k, k, k, k, k, k, k, k, k],
     [k, _, _, _, _, _, _, k, _, _, _, k, _, _, _, k],
     [k, _, m, m, _, m, _, k, _, i, _, k, _, h, _, k],

@@ -1,6 +1,8 @@
+import src.utilidades.tablero.tablero
+
 class Nivel {
   var property estado
-  const tablero
+  const property plano
   var property jugador = null
   
   method inicializar() {

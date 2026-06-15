@@ -1,6 +1,7 @@
 import wollok.game.*
 
 class Boton {
+  const property esAtravesable = true
   const property image = "boton.png"
   const property position
 }
