@@ -1,41 +1,38 @@
 import wollok.game.*
-import src.enemigoprueba.mapa.*
-import src.enemigoprueba.player.*
-import src.enemigoprueba.vision.*
-import src.enemigoprueba.enemigo.*
+import src.enemigoprueba.mapa.mapa.*
+import src.enemigoprueba.jugador.player.*
+import src.enemigoprueba.enemigos.gestor.*
+import src.enemigoprueba.trampas.trampa.*
 
 program juego {
   game.title("Laberinto")
   game.width(20)
   game.height(20)
   game.cellSize(32)
-  game.boardGround("fondo.jpg")
+  game.boardGround("fondo2.jpg")
 
   mapaBuilder.setup()
-
-  const enemy1 = new Enemigo(
-    position    = game.at(10, 10),
-    campoVision = new VisionSemicircular(radio = 6)
-  )
-
-  const enemy2 = new Enemigo(
-    position    = game.at(1, 6),
-    campoVision = new VisionSemicircular(radio = 6)
-  )
-
   game.addVisual(player)
-  game.addVisual(enemy1)
-  game.addVisual(enemy2)
+  gestorEnemigos.setup()
 
+  const alambre = new AlambreDePua(position = game.at(12, 4), gestor = gestorEnemigos)
+  game.addVisual(alambre)
 
   keyboard.right().onPressDo({ player.moveRight() })
   keyboard.left().onPressDo({ player.moveLeft() })
   keyboard.up().onPressDo({ player.moveUp() })
   keyboard.down().onPressDo({ player.moveDown() })
+  keyboard.space().onPressDo({
+    if (player.estaEscondido()) {
+      player.salir()
+    } else {
+      player.esconderse()
+    }
+  })
 
   game.onTick(500, "enemies", {
-    enemy1.actualizar(player)
-    enemy2.actualizar(player)
+    gestorEnemigos.actualizar(player)
+    alambre.verificar(player)
   })
 
   game.start()
