@@ -3,11 +3,12 @@ import src.utilidades.direcciones.*
 import src.utilidades.tablero.tablero
 
 object jugador {
+  const imagen = jugadorImagen
   var property position = game.center()
   var property orientacion = arriba
   var estado = visible
   
-  method image() = estado.image(orientacion)
+  method image() = imagen.image()
   
   method esAtravesable() = estado.esAtravesable()
   
@@ -61,14 +62,23 @@ object jugador {
   }
 } 
 
-/* ESTADOS */
+/* OBJETOS ÚTILES */
 
-// Dependen de si ByteMan está dentro o fuera del Armario.
+object jugadorImagen {
+  const base = "byteman"
+  const extension = ".png"
+  
+  method orientacion() = jugador.orientacion().comoCadena()
+  
+  method tamaño() = if (tablero.comparteCelda(jugador)) "35" else "50"
+  
+  method image() = ((((base + "-") + self.orientacion()) + "-") + self.tamaño()) + extension
+} 
+
+/* ESTADOS */
 
 object visible {
   const property esAtravesable = true
-  
-  method image(orientacion) = ("byteman-" + orientacion.comoCadena()) + ".png"
   
   method mover(direccion, jugador) {
     jugador.mover(direccion)
@@ -78,11 +88,6 @@ object visible {
 object escondido {
   const property esAtravesable = false
   var property escondite = null
-  
-  method image(orientacion) {
-    
-    // No debe aparecer ninguna imagen  
-  }
   
   method mover(direccion, jugador) {
     jugador.mover(direccion)

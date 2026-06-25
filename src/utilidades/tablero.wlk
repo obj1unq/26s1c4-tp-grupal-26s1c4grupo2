@@ -34,4 +34,6 @@ object tablero {
   }
 
   method elementosEnCelda(posicion) = game.getObjectsIn(posicion)
+
+  method comparteCelda(elemento) = not game.colliders(elemento).isEmpty()
 }
