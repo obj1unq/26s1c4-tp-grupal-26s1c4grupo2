@@ -27,9 +27,9 @@ object inicializadorArmario {
   method inicializar(nivel, x, y) {
     game.addVisual(new Armario(position = game.at(x, y)))
   }
-} /* ESTADOS */
+} 
 
-// Dependen de si ByteMan está dentro o fuera del Armario.
+/* ESTADOS */
 
 object libre {
   const property esAtravesable = true
@@ -39,7 +39,6 @@ object libre {
 
 object ocupado {
   const property esAtravesable = false
-  const property _jugador = jugador
   
-  method image() = ("armario-ocupado-" + _jugador.orientacion().comoCadena()) + ".png"
+  method image() = "armario-ocupado.png"
 }
