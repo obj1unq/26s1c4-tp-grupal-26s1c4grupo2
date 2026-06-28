@@ -1,91 +1,63 @@
 import wollok.game.*
 import src.enemigoprueba.movimiento.movimiento.*
 import src.enemigoprueba.utils.utils.*
+import src.enemigoprueba.direccion.direccion.*
 
-object dirDerecha {
-  method dx() = 1
-  method dy() = 0
-  method nombre() = "derecha"
-  method siguiente() = dirArriba
-}
-
-object dirArriba {
-  method dx() = 0
-  method dy() = 1
-  method nombre() = "arriba"
-  method siguiente() = dirIzquierda
-}
-
-object dirIzquierda {
-  method dx() = -1
-  method dy() = 0
-  method nombre() = "izquierda"
-  method siguiente() = dirAbajo
-}
-
-object dirAbajo {
-  method dx() = 0
-  method dy() = -1
-  method nombre() = "abajo"
-  method siguiente() = dirDerecha
-}
 
 class Enemigo {
-  var property position    
-  var property campoVision 
-  var property movimiento 
-  var property direccionX = 1
-  var property direccionY = 0
+  var property position
+  const campoVision
+  const movimiento
+  var direccion = dirDerecha
+
+  const direcciones = [dirDerecha, dirArriba, dirIzquierda, dirAbajo]
 
   method image()
 
-
-  method nombreDireccion() =
-    [dirDerecha, dirArriba, dirIzquierda, dirAbajo]
-      .find({ d => d.dx() == direccionX && d.dy() == direccionY })
-      .nombre()
-
+  method nombreDireccion() = direccion.nombre()
+  
   method detectarObjetivo(objetivo) {
-    if (!objetivo.estaEscondido() && campoVision.puedeVerA(self, objetivo)) {
+    if ((!objetivo.estaEscondido()) && campoVision.puedeVerA(self, objetivo))
       movimiento.verObjetivo(objetivo.position())
-    } else {
-      movimiento.perderObjetivo()
-    }
+    else movimiento.perderObjetivo()
   }
-
+  
   method actualizar(objetivo) {
     self.detectarObjetivo(objetivo)
-    const invoco = self.reaccionar(objetivo)
-    const antesX = position.x()
-    const antesY = position.y()
+    const posAnterior = position
     self.mover(objetivo)
-    self.actualizarMirada(antesX, antesY)
+    self.actualizarMirada(posAnterior)
     self.alContacto(objetivo)
-    return invoco
   }
-
-  method reaccionar(objetivo) { return false }
-
+  
+  method reaccionar(objetivo) = false
+  
   method mover(objetivo) {
     movimiento.mover(self, objetivo)
   }
-
+  
   method alContacto(objetivo) {
-    if (position.x() == objetivo.position().x() && position.y() == objetivo.position().y()) {
-      game.say(self, "Game Over")
+    if ((position.x() == objetivo.position().x()) && (position.y() == objetivo.position().y())) {
+      game.say(objetivo, "Game Over")
       game.stop()
     }
   }
-
-  method actualizarMirada(antesX, antesY) {
-    const ddx = (position.x() - antesX)
-    const ddy = (position.y() - antesY)
-    if (ddx != 0 || ddy != 0) {
-      direccionX = utils.signo(ddx)
-      direccionY = utils.signo(ddy)
+  
+  method actualizarMirada(posAnterior) {
+    const ddx = position.x() - posAnterior.x()
+    const ddy = position.y() - posAnterior.y()
+    if ((ddx != 0) || (ddy != 0)) {
+      const dx = utils.signo(ddx)
+      const dy = utils.signo(ddy)
+      self.cambiarDireccion(direcciones.find({ d => d.dx() == dx && d.dy() == dy }))
     }
   }
 
+  method cambiarDireccion(dir) {
+    direccion = dir
+  }
+
+  method direccion() = direccion
 }
 
 class EnemigoDron inherits Enemigo {
@@ -93,16 +65,19 @@ class EnemigoDron inherits Enemigo {
 }
 
 class EnemigoCamara inherits Enemigo {
-
   override method image() = "camara-" + self.nombreDireccion() + "-alarma.png"
-
-  override method detectarObjetivo(objetivo) { }
-
-  override method reaccionar(objetivo) {
-    return !objetivo.estaEscondido() && campoVision.puedeVerA(self, objetivo)
+  
+  override method detectarObjetivo(objetivo) {
+    
   }
-
-  override method alContacto(objetivo) { }
+  
+  override method reaccionar(
+    objetivo
+  ) = (!objetivo.estaEscondido()) && campoVision.puedeVerA(self, objetivo)
+  
+  override method alContacto(objetivo) {
+    
+  }
 }
 
 class Sabueso inherits Enemigo {
