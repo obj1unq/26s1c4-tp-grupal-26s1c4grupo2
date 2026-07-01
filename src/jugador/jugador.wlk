@@ -11,7 +11,9 @@ object jugador {
   method image() = imagen.image()
   
   method esAtravesable() = estado.esAtravesable()
-  
+
+  method estaEscondido() = estado.estaEscondido()
+
   method visibilizar() {
     estado = visible
   }
@@ -79,7 +81,9 @@ object jugadorImagen {
 
 object visible {
   const property esAtravesable = true
-  
+
+  method estaEscondido() = false
+
   method mover(direccion, jugador) {
     jugador.mover(direccion)
   }
@@ -88,7 +92,9 @@ object visible {
 object escondido {
   const property esAtravesable = false
   var property escondite = null
-  
+
+  method estaEscondido() = true
+
   method mover(direccion, jugador) {
     jugador.mover(direccion)
     jugador.visibilizar()

@@ -1,6 +1,4 @@
-import wollok.game.*
-import src.enemigoprueba.mapa.mapa.*
-import src.enemigoprueba.utils.utils.*
+import utils.utils
 
 class CampoVision {
   method puedeVerA(enemigo, objetivo)
@@ -16,7 +14,7 @@ class CampoVision {
 }
 
 class VisionLineal inherits CampoVision {
-  const rango = 5
+  const property rango = 5
   
   override method puedeVerA(enemigo, objetivo) = (self.estaAlineadoCon(
     enemigo,
@@ -55,7 +53,7 @@ class VisionLineal inherits CampoVision {
 }
 
 class VisionSemicircular inherits CampoVision {
-  const property radio = 4 //Define le rango del cono, por ahora solo se define al inicializar
+  const property radio = 4
   
   override method puedeVerA(enemigo, objetivo) = (self.estaDentroDeRadio(
     enemigo,

@@ -1,24 +1,21 @@
 import wollok.game.*
-import src.enemigoprueba.mapa.mapa.*
-import src.enemigoprueba.utils.utils.*
-import src.enemigoprueba.direccion.direccion.*
+import src.utilidades.tablero.tablero
+import src.utilidades.direcciones.*
+import utils.utils
 
 class EstadoMovimiento {
   method mover(enemigo, movimiento, objetivo)
 }
 
 object patrullarAleatorio inherits EstadoMovimiento {
-  const direcciones = [dirDerecha, dirIzquierda, dirArriba, dirAbajo]
-
+  const direcciones = [derecha, izquierda, arriba, abajo]
+  
   override method mover(enemigo, movimiento, objetivo) {
     const dir = direcciones.anyOne()
-    const dx = dir.dx()
-    const dy = dir.dy()
-    if (movimiento.puedeMoverse(enemigo, dx, dy))
-      movimiento.moverEn(enemigo, dx, dy)
+    if (movimiento.puedeMoverse(enemigo, dir.dx(), dir.dy()))
+      movimiento.moverEn(enemigo, dir.dx(), dir.dy())
   }
 }
-
 
 class Patrullar inherits EstadoMovimiento {
   var dx = 1
@@ -53,27 +50,26 @@ object perseguir inherits EstadoMovimiento {
 
 class Investigar inherits EstadoMovimiento {
   const ultimaPos
-
+  
   override method mover(enemigo, movimiento, objetivo) {
-    if (self.llegoA(enemigo) || (!movimiento.darPasoHacia(enemigo, ultimaPos))) movimiento.olvidar()
+    if (self.llegoA(enemigo) || (!movimiento.darPasoHacia(enemigo, ultimaPos)))
+      movimiento.olvidar()
   }
-
+  
   method llegoA(enemigo) = enemigo.position() == ultimaPos
 }
 
 class Rotar inherits EstadoMovimiento {
   const ticksPorDireccion = 6
   var ticks = 0
-  var dir = dirDerecha
-
+  
   override method mover(enemigo, movimiento, objetivo) {
     ticks += 1
     if ((ticks % ticksPorDireccion) == 0) self.rotar(enemigo)
   }
-
+  
   method rotar(enemigo) {
-    dir = dir.siguiente()
-    enemigo.cambiarDireccion(dir)
+    enemigo.cambiarDireccion(enemigo.direccion().rotar())
   }
 }
 
@@ -81,22 +77,22 @@ class Movimiento {
   const estadoBase = new Patrullar()
   var estado = null
   var ultimaVista = null
-
+  
   method initialize() {
     estado = estadoBase
   }
-
+  
   method tieneUltima() = ultimaVista !== null
-
+  
   method mover(enemigo, objetivo) {
     estado.mover(enemigo, self, objetivo)
   }
-
+  
   method verObjetivo(pos) {
     ultimaVista = pos
     estado = perseguir
   }
-
+  
   method perderObjetivo() {
     if (self.tieneUltima()) {
       estado = new Investigar(ultimaPos = ultimaVista)
@@ -104,13 +100,16 @@ class Movimiento {
       estado = estadoBase
     }
   }
-
+  
   method olvidar() {
     ultimaVista = null
     estado = estadoBase
   }
   
-  method darPasoHacia(enemigo, pos) = self.darPasoEnX(enemigo, pos.x()) || self.darPasoEnY(enemigo, pos.y())
+  method darPasoHacia(enemigo, pos) = self.darPasoEnX(
+    enemigo,
+    pos.x()
+  ) || self.darPasoEnY(enemigo, pos.y())
   
   method darPasoEnX(enemigo, tx) {
     const dx = utils.signo(tx - enemigo.position().x())
@@ -138,5 +137,7 @@ class Movimiento {
   
   method calcularDestino(pos, dx, dy) = game.at(pos.x() + dx, pos.y() + dy)
   
-  method estaLibre(pos) = !mapaBuilder.isWallEn(pos.x(), pos.y())
+  method estaLibre(pos) = tablero.elementosEnCelda(pos).all(
+    { e => e.esAtravesable() }
+  )
 }

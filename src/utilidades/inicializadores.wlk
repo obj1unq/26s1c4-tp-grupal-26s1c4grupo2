@@ -1,9 +1,9 @@
 import src.jugador.jugador.jugador
 import src.jugador.items.pem.inicializadorPEM
 import src.jugador.items.virus.inicializadorVirus
-import src.enemigo.camara.inicializadorCamara
-import src.enemigo.dron.inicializadorDron
-import src.enemigo.sabueso.inicializadorSabueso
+import src.enemigo.tipos.camara.inicializadorCamara
+import src.enemigo.tipos.dron.inicializadorDron
+import src.enemigo.tipos.sabueso.inicializadorSabueso
 import src.elemento.armario.inicializadorArmario
 import src.elemento.baseDeDatos.inicializadorBaseDeDatos
 import src.elemento.boton.inicializadorBoton
