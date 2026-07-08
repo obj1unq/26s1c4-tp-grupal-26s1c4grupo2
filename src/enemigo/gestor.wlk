@@ -8,9 +8,11 @@ class GestorEnemigos {
   var pendientes = []
   var property maxEnemigos = 6
   var property estado = null
+  const nivel
   
   method agregar(enemigo) {
     if (estado !== null) enemigo.manejarEstado(estado)
+    enemigo.nivel(nivel)
     enemigos.add(enemigo)
     game.addVisual(enemigo)
   }

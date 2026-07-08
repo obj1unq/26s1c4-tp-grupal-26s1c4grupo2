@@ -10,6 +10,7 @@ class Enemigo {
   var property campoVision
   var property movimiento
   const direcciones = [derecha, arriba, izquierda, abajo]
+  var property nivel = null
   
   method prefijoImagen()
   
@@ -74,8 +75,7 @@ class Enemigo {
   
   method alContacto(objetivo) {
     if ((position.x() == objetivo.position().x()) && (position.y() == objetivo.position().y())) {
-      game.say(objetivo, "Game Over")
-      game.stop()
+      nivel.juego().perder()
     }
   }
   
