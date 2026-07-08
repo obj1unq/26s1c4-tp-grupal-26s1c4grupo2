@@ -19,11 +19,9 @@ El jugador controla a *ByteMan*, un extractor de datos independiente. El objetiv
 El sigilo no es más que una asimetría de información, en donde el jugador ve todo el tablero y sabe dónde están los enemigos que forman parte de *Argus*. Tales enemigos, en cambio, tienen información limitada y no saben dónde está el jugador hasta que entra en su rango predefinido ("campo de visión").
 
 
-* **Estado de Sigilo:** El entorno está en calma. En él, los enemigos patrullan y/o vigilan de modo predefinido el tablero para detectar un posible infiltrado, intentando resguardar la seguridad de los datos de la empresa. Si algún enemigo detecta a un infiltrado, se dispara la alarma. 
+* **Estado de Sigilo:** Es el estado por defecto de cada enemigo. En él, patrulla y/o vigila de modo predefinido el tablero para detectar un posible infiltrado.
 
-* **Estado de Alarma:** El entorno es hostil. Ahora, los enemigos persiguen de forma activa al infiltrado detectado por alguno de ellos.
-
-* **Estado de Reinicio:**: Es un entorno en el que se paraliza el patrullaje o persecución de los enemigos por un lapso de 5 segundos, dejándolos "congelados" y "fuera de servicio" en la grilla.
+* **Estado de Alarma:** Cuando un enemigo detecta al infiltrado, entra individualmente en este estado y lo persigue de forma activa. Es un estado propio de cada enemigo, no algo que se contagie al resto del sistema Argus: mientras uno persigue, los demás pueden seguir patrullando tranquilos hasta detectarlo por su cuenta.
 
 ### 3. *ByteMan*
 
@@ -64,7 +62,7 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
 
     ![Baldosa](./assets/baldosa-sigilo.png "Baldosa")
     
-    Es atravesable. Representa el espacio vacío por donde se pueden desplazar tanto *ByteMan* como sus enemigos.
+    Es atravesable. Representa el espacio vacío por donde se pueden desplazar tanto *ByteMan* como sus enemigos. Su imagen queda fija según el estado del nivel al iniciar; no cambia en tiempo real.
 
 * ##### **Muro** 
     
@@ -82,7 +80,7 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
     
     ![Armario](./assets/armario.png "Armario")
 
-    Es atravesable; si *ByteMan* lo atraviesa, puede ocultarse dentro de él. Cuando está oculto, sus enemigos no pueden detectarlo.
+    Es atravesable; si *ByteMan* lo atraviesa, se oculta automáticamente dentro de él. Cuando está oculto, sus enemigos no pueden detectarlo.
 
 * ##### **Cables pelados**
     
