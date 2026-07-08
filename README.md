@@ -27,7 +27,7 @@ El sigilo no es más que una asimetría de información, en donde el jugador ve 
 
 > Avatar preliminar para representar a *ByteMan*
 
-![ByteMan](./assets/byteman-derecha.png "ByteMan mirando a la derecha") ![ByteMan](./assets/byteman-abajo.png "ByteMan mirando abajo") ![ByteMan](./assets/byteman-izquierda.png "ByteMan mirando a la izquierda") ![ByteMan](./assets/byteman-arriba.png "ByteMan mirando arriba")
+![ByteMan](./assets/byteman-derecha-50.png "ByteMan mirando a la derecha") ![ByteMan](./assets/byteman-abajo-50.png "ByteMan mirando abajo") ![ByteMan](./assets/byteman-izquierda-50.png "ByteMan mirando a la izquierda") ![ByteMan](./assets/byteman-arriba-50.png "ByteMan mirando arriba")
 
 El personaje principal se mueve de a una celda a la vez utilizando las flechas direccionales.
 
@@ -62,7 +62,7 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
 
     ![Baldosa](./assets/baldosa-sigilo.png "Baldosa")
     
-    Es atravesable. Representa el espacio vacío por donde se pueden desplazar tanto *ByteMan* como sus enemigos. Su imagen queda fija según el estado del nivel al iniciar; no cambia en tiempo real.
+    Es atravesable. Representa el espacio vacío por donde se pueden desplazar tanto *ByteMan* como sus enemigos. Su imagen queda fija según el estado del nivel al iniciar.
 
 * ##### **Muro** 
     
@@ -78,7 +78,7 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
 
 * ##### **Armario de Mantenimiento**
     
-    ![Armario](./assets/armario.png "Armario")
+    ![Armario libre](./assets/armario-libre.png "Armario libre") ![Armario ocupado](./assets/armario-ocupado.png "Armario ocupado")
 
     Es atravesable; si *ByteMan* lo atraviesa, se oculta automáticamente dentro de él. Cuando está oculto, sus enemigos no pueden detectarlo.
 
@@ -90,13 +90,13 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
 
 * ##### **Puerta Blindada** 
     
-    ![Puerta Blindada](./assets/puerta.png "Puerta Blindada")
+    ![Puerta cerrada](./assets/puerta-cerrada.png "Puerta cerrada") ![Puerta abierta](./assets/puerta-abierta.png "Puerta abierta")
     
     Posee estado, el cual puede ser abierto o cerrado. Si está abierta, es atravesable. Sirve como seguridad extra para resguardar al **Base de Datos** de un posible infiltrado.
 
 * ##### **Botón de Hackeo**
 
-    ![Botón de Hackeo](./assets/boton.png "Botón de Hackeo")
+    ![Botón levantado](./assets/boton-levantado.png "Botón levantado") ![Botón presionado](./assets/boton-presionado.png "Botón presionado")
     
     Es atravesable; si *ByteMan* lo atraviesa, lo presiona. Sirve para abrir o cerrar la **Puerta Blindada**.
 
