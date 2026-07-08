@@ -1,0 +1,109 @@
+import wollok.game.*
+import src.utilidades.direcciones.*
+import src.enemigo.comportamiento.vision.*
+import src.elemento.muro.*
+
+class EnemigoDePrueba {
+  var property position
+  var property direccion
+}
+
+class ObjetivoDePrueba {
+  var property position
+}
+
+describe "VisionLineal" {
+  test "el rango por defecto es 5" {
+    assert.equals(5, new VisionLineal().rango())
+  }
+
+  test "puede ver a un objetivo alineado en fila, en frente y en rango" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(8, 5))
+    assert.that(new VisionLineal(rango = 5).puedeVerA(enemigo, objetivo))
+  }
+
+  test "puede ver a un objetivo alineado en columna, en frente y en rango" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = arriba)
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 8))
+    assert.that(new VisionLineal(rango = 5).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo alineado pero detras suyo" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(2, 5))
+    assert.notThat(new VisionLineal(rango = 5).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo alineado pero fuera de rango" {
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 0))
+    assert.notThat(new VisionLineal(rango = 5).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo que no esta ni en su fila ni en su columna" {
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(3, 3))
+    assert.notThat(new VisionLineal(rango = 5).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo si un muro bloquea la linea entre ambos" {
+    game.clear()
+    game.addVisual(new Muro(position = game.at(3, 0)))
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(6, 0))
+    assert.notThat(new VisionLineal(rango = 10).puedeVerA(enemigo, objetivo))
+  }
+}
+
+describe "VisionSemicircular" {
+  test "el radio por defecto es 4" {
+    assert.equals(4, new VisionSemicircular().radio())
+  }
+
+  test "puede ver a un objetivo dentro del radio y del angulo frontal" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(7, 6))
+    assert.that(new VisionSemicircular(radio = 4).puedeVerA(enemigo, objetivo))
+  }
+
+  test "puede ver a un objetivo justo al costado, a 90 grados" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 8))
+    assert.that(new VisionSemicircular(radio = 4).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo detras suyo aunque este dentro del radio" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(3, 5))
+    assert.notThat(new VisionSemicircular(radio = 4).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo fuera del radio" {
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 10))
+    assert.notThat(new VisionSemicircular(radio = 4).puedeVerA(enemigo, objetivo))
+  }
+
+  test "no puede ver a un objetivo si un muro bloquea la linea entre ambos" {
+    game.clear()
+    game.addVisual(new Muro(position = game.at(2, 0)))
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(4, 0))
+    assert.notThat(new VisionSemicircular(radio = 10).puedeVerA(enemigo, objetivo))
+  }
+}
+
+describe "CampoVision - orientacion" {
+  test "un objetivo delante da un valor positivo" {
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(3, 0))
+    assert.that(new VisionLineal().orientacion(enemigo, objetivo) > 0)
+  }
+
+  test "un objetivo detras da un valor negativo" {
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 0), direccion = derecha)
+    const objetivo = new ObjetivoDePrueba(position = game.at(0, 0))
+    assert.that(new VisionLineal().orientacion(enemigo, objetivo) < 0)
+  }
+}

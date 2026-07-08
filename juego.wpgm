@@ -1,0 +1,7 @@
+import src.juego.juego
+
+program Juego {
+  game.title("ByteMan")  
+  juego.cargarPantallaInicial()
+  game.start()
+}

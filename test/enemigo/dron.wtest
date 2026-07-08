@@ -1,0 +1,199 @@
+import wollok.game.*
+import src.utilidades.direcciones.*
+import src.enemigo.tipos.dron.*
+
+class ObjetivoDePrueba {
+  var property position
+  var property escondido = false
+
+  method estaEscondido() = escondido
+}
+
+class EstadoDePrueba {
+  method afectar(elemento) {
+    elemento.manejarAlarma()
+  }
+}
+
+describe "Dron - imagen y estado visual" {
+  test "Dron imagen" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.equals("dron", dron.prefijoImagen())
+  }
+
+  test "Combinacion de imagen y prefijo" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.equals("dron-arriba-.png", dron.image())
+  }
+
+  test "manejarSigilo cambia el estado de la imagen" {
+    const dron = new Dron(position = game.at(0, 0))
+    dron.manejarSigilo()
+    assert.equals("dron-arriba-sigilo.png", dron.image())
+  }
+
+  test "manejarAlarma cambia el estado de la imagen" {
+    const dron = new Dron(position = game.at(0, 0))
+    dron.manejarAlarma()
+    assert.equals("dron-arriba-alarma.png", dron.image())
+  }
+
+  test "manejarReinicio cambia el estado de la imagen" {
+    const dron = new Dron(position = game.at(0, 0))
+    dron.manejarReinicio()
+    assert.equals("dron-arriba-reinicio.png", dron.image())
+  }
+
+  test "manejarEstado delega en el afectar del estado recibido" {
+    const dron = new Dron(position = game.at(0, 0))
+    dron.manejarEstado(new EstadoDePrueba())
+    assert.equals("dron-arriba-alarma.png", dron.image())
+  }
+}
+
+describe "Dron - direccion" {
+  test "la orientacion por defecto es arriba" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.equals(arriba, dron.direccion())
+  }
+
+  test "cambiarDireccion actualiza la orientacion" {
+    const dron = new Dron(position = game.at(0, 0))
+    dron.cambiarDireccion(derecha)
+    assert.equals(derecha, dron.direccion())
+  }
+
+  test "actualizarMirada orienta al dron hacia donde se movio" {
+    const dron = new Dron(position = game.at(3, 0))
+    dron.actualizarMirada(game.at(0, 0))
+    assert.equals(derecha, dron.direccion())
+  }
+
+  test "actualizarMirada no cambia la orientacion si no hubo movimiento" {
+    const dron = new Dron(position = game.at(2, 2))
+    dron.cambiarDireccion(izquierda)
+    dron.actualizarMirada(game.at(2, 2))
+    assert.equals(izquierda, dron.direccion())
+  }
+}
+
+describe "Dron - configuracion por defecto" {
+  test "es atravesable" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.that(dron.esAtravesable())
+  }
+
+  test "el campo de vision es semicircular con radio 2" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.equals(2, dron.campoVision().radio())
+  }
+
+  test "el movimiento arranca sin objetivo previsto" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.notThat(dron.movimiento().tieneUltima())
+  }
+
+  test "puede ser alertado por un ruido" {
+    const dron = new Dron(position = game.at(0, 0))
+    assert.that(dron.puedeSerAlertado())
+  }
+
+  test "reaccionar siempre devuelve false, incluso con el objetivo a la vista" {
+    const dron = new Dron(position = game.at(0, 0))
+    const objetivo = new ObjetivoDePrueba(position = game.at(0, 3))
+    assert.notThat(dron.reaccionar(objetivo))
+  }
+}
+
+describe "Dron - deteccion de objetivo" {
+  test "si el objetivo esta escondido, no queda registrado como visto" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
+    dron.detectarObjetivo(objetivo)
+    assert.notThat(dron.movimiento().tieneUltima())
+  }
+
+  test "si el objetivo esta dentro del campo de vision, queda registrado como visto" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 12))
+    dron.detectarObjetivo(objetivo)
+    assert.that(dron.movimiento().tieneUltima())
+  }
+
+  test "si el objetivo esta fuera de rango, no queda registrado como visto" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 20))
+    dron.detectarObjetivo(objetivo)
+    assert.notThat(dron.movimiento().tieneUltima())
+  }
+
+  test "si el objetivo es detectado, el icono cambia a alarma" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 12))
+    dron.detectarObjetivo(objetivo)
+    assert.equals("dron-arriba-alarma.png", dron.image())
+  }
+
+  test "si el objetivo se esconde pero se recuerda su ultima posicion, el icono se mantiene en alarma" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const visible = new ObjetivoDePrueba(position = game.at(10, 12))
+    const escondido = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
+    dron.detectarObjetivo(visible)
+    dron.detectarObjetivo(escondido)
+    assert.equals("dron-arriba-alarma.png", dron.image())
+  }
+
+  test "una vez que el movimiento olvida al objetivo, el icono vuelve a sigilo" {
+    game.clear()
+    const dron = new Dron(position = game.at(10, 10))
+    const visible = new ObjetivoDePrueba(position = game.at(10, 12))
+    const escondido = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
+    dron.detectarObjetivo(visible)
+    dron.movimiento().olvidar()
+    dron.detectarObjetivo(escondido)
+    assert.equals("dron-arriba-sigilo.png", dron.image())
+  }
+}
+
+describe "Dron - contacto con el objetivo" {
+  test "si coincide la posicion con el objetivo, no lanza una excepcion" {
+    const dron = new Dron(position = game.at(5, 5))
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 5))
+    assert.doesNotThrowException({ dron.alContacto(objetivo) })
+  }
+
+  test "si no coincide la posicion, no pasa nada" {
+    const dron = new Dron(position = game.at(5, 5))
+    const objetivo = new ObjetivoDePrueba(position = game.at(1, 1))
+    assert.doesNotThrowException({ dron.alContacto(objetivo) })
+  }
+}
+
+describe "Dron - alertar" {
+  test "alertar hace que el dron investigue la posicion indicada" {
+    game.clear()
+    const dron = new Dron(position = game.at(0, 0))
+    dron.alertar(game.at(5, 0))
+    assert.that(dron.movimiento().tieneUltima())
+  }
+
+  test "alertar cambia el icono a alarma" {
+    game.clear()
+    const dron = new Dron(position = game.at(0, 0))
+    dron.alertar(game.at(5, 0))
+    assert.equals("dron-arriba-alarma.png", dron.image())
+  }
+
+  test "tras alertar, el dron se mueve hacia la posicion indicada" {
+    game.clear()
+    const dron = new Dron(position = game.at(0, 0))
+    dron.alertar(game.at(5, 0))
+    dron.mover(new ObjetivoDePrueba(position = game.at(9, 9)))
+    assert.equals(game.at(1, 0), dron.position())
+  }
+}

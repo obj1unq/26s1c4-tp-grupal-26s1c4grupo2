@@ -1,0 +1,188 @@
+import wollok.game.*
+import src.utilidades.direcciones.*
+import src.enemigo.tipos.camara.*
+
+class ObjetivoDePrueba {
+  var property position
+  var property escondido = false
+
+  method estaEscondido() = escondido
+}
+
+class EstadoDePrueba {
+  method afectar(elemento) {
+    elemento.manejarAlarma()
+  }
+}
+
+describe "Camara - imagen y estado visual" {
+  test "el prefijo de imagen es camara" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.equals("camara", camara.prefijoImagen())
+  }
+
+  test "la imagen combina prefijo, orientacion y sin estado" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.equals("camara-arriba-.png", camara.image())
+  }
+
+  test "manejarSigilo cambia el estado de la imagen" {
+    const camara = new Camara(position = game.at(0, 0))
+    camara.manejarSigilo()
+    assert.equals("camara-arriba-sigilo.png", camara.image())
+  }
+
+  test "manejarAlarma cambia el estado de la imagen" {
+    const camara = new Camara(position = game.at(0, 0))
+    camara.manejarAlarma()
+    assert.equals("camara-arriba-alarma.png", camara.image())
+  }
+
+  test "manejarReinicio cambia el estado de la imagen" {
+    const camara = new Camara(position = game.at(0, 0))
+    camara.manejarReinicio()
+    assert.equals("camara-arriba-reinicio.png", camara.image())
+  }
+
+  test "manejarEstado delega en el afectar del estado recibido" {
+    const camara = new Camara(position = game.at(0, 0))
+    camara.manejarEstado(new EstadoDePrueba())
+    assert.equals("camara-arriba-alarma.png", camara.image())
+  }
+}
+
+describe "Camara - direccion" {
+  test "la orientacion por defecto es arriba" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.equals(arriba, camara.direccion())
+  }
+
+  test "cambiarDireccion actualiza la orientacion" {
+    const camara = new Camara(position = game.at(0, 0))
+    camara.cambiarDireccion(derecha)
+    assert.equals(derecha, camara.direccion())
+  }
+}
+
+describe "Camara - configuracion por defecto" {
+  test "no es atravesable" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.notThat(camara.esAtravesable())
+  }
+
+  test "el campo de vision es lineal con rango 4" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.equals(4, camara.campoVision().rango())
+  }
+
+  test "el movimiento arranca sin objetivo previsto" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.notThat(camara.movimiento().tieneUltima())
+  }
+
+  test "no puede ser alertada por un ruido" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.notThat(camara.puedeSerAlertado())
+  }
+}
+
+describe "Camara - deteccion de objetivo (no modifica el movimiento)" {
+  test "detectarObjetivo no modifica el movimiento aunque el objetivo este a la vista" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13))
+    camara.detectarObjetivo(objetivo)
+    assert.notThat(camara.movimiento().tieneUltima())
+  }
+
+  test "detectarObjetivo no modifica el movimiento si el objetivo esta escondido" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13), escondido = true)
+    camara.detectarObjetivo(objetivo)
+    assert.notThat(camara.movimiento().tieneUltima())
+  }
+
+  test "si el objetivo es detectado, el icono cambia a alarma" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13))
+    camara.detectarObjetivo(objetivo)
+    assert.equals("camara-arriba-alarma.png", camara.image())
+  }
+
+  test "si el objetivo esta escondido, el icono queda en sigilo" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13), escondido = true)
+    camara.detectarObjetivo(objetivo)
+    assert.equals("camara-arriba-sigilo.png", camara.image())
+  }
+}
+
+describe "Camara - reaccionar" {
+  test "reacciona cuando el objetivo esta alineado, en frente, en rango y visible" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13))
+    assert.that(camara.reaccionar(objetivo))
+  }
+
+  test "no reacciona si el objetivo esta escondido" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13), escondido = true)
+    assert.notThat(camara.reaccionar(objetivo))
+  }
+
+  test "no reacciona si el objetivo no esta alineado" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(13, 13))
+    assert.notThat(camara.reaccionar(objetivo))
+  }
+
+  test "no reacciona si el objetivo esta alineado pero fuera de rango" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 20))
+    assert.notThat(camara.reaccionar(objetivo))
+  }
+
+  test "no reacciona si el objetivo esta alineado pero detras suyo" {
+    game.clear()
+    const camara = new Camara(position = game.at(10, 10))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 8))
+    assert.notThat(camara.reaccionar(objetivo))
+  }
+}
+
+describe "Camara - contacto con el objetivo (sobreescrito como no-op)" {
+  test "si coincide la posicion con el objetivo, no lanza una excepcion" {
+    const camara = new Camara(position = game.at(5, 5))
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 5))
+    assert.doesNotThrowException({ camara.alContacto(objetivo) })
+  }
+
+  test "si no coincide la posicion, no pasa nada" {
+    const camara = new Camara(position = game.at(5, 5))
+    const objetivo = new ObjetivoDePrueba(position = game.at(1, 1))
+    assert.doesNotThrowException({ camara.alContacto(objetivo) })
+  }
+}
+
+describe "Camara - alertar (no responde, no puede ser alertada)" {
+  test "alertar no modifica el movimiento de la camara" {
+    game.clear()
+    const camara = new Camara(position = game.at(0, 0))
+    camara.alertar(game.at(5, 0))
+    assert.notThat(camara.movimiento().tieneUltima())
+  }
+
+  test "alertar no modifica el icono de la camara" {
+    game.clear()
+    const camara = new Camara(position = game.at(0, 0))
+    camara.alertar(game.at(5, 0))
+    assert.equals("camara-arriba-.png", camara.image())
+  }
+}

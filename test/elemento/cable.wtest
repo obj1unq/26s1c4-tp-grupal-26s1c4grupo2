@@ -1,0 +1,50 @@
+import wollok.game.*
+import src.elemento.cable.*
+
+class GestorDePrueba {
+  var cantidadDeAlertas = 0
+  var property ultimaPosicionAlertada = null
+  var property ultimoRangoAlertado = null
+
+  method alertarCercaDe(posicion, rango) {
+    cantidadDeAlertas += 1
+    ultimaPosicionAlertada = posicion
+    ultimoRangoAlertado = rango
+  }
+
+  method cantidadDeAlertas() = cantidadDeAlertas
+}
+
+describe "Cable" {
+  test "es atravesable" {
+    const cable = new Cable(position = game.at(0, 0), gestorEnemigos = new GestorDePrueba())
+    assert.that(cable.esAtravesable())
+  }
+
+  test "el rango de alerta por defecto es 6" {
+    const cable = new Cable(position = game.at(0, 0), gestorEnemigos = new GestorDePrueba())
+    assert.equals(6, cable.rango())
+  }
+
+  test "al ser pisado, alerta al gestor de enemigos sobre su posicion y su rango" {
+    const gestor = new GestorDePrueba()
+    const cable = new Cable(position = game.at(3, 4), gestorEnemigos = gestor)
+
+    cable.manejarColisionConJugador(null)
+
+    assert.equals(1, gestor.cantidadDeAlertas())
+    assert.equals(game.at(3, 4), gestor.ultimaPosicionAlertada())
+    assert.equals(6, gestor.ultimoRangoAlertado())
+  }
+
+  test "solo alerta la primera vez, aunque se lo pise varias veces" {
+    const gestor = new GestorDePrueba()
+    const cable = new Cable(position = game.at(3, 4), gestorEnemigos = gestor)
+
+    cable.manejarColisionConJugador(null)
+    cable.manejarColisionConJugador(null)
+    cable.manejarColisionConJugador(null)
+
+    assert.equals(1, gestor.cantidadDeAlertas())
+  }
+}

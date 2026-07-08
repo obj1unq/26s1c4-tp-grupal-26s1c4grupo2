@@ -1,0 +1,202 @@
+import wollok.game.*
+import src.utilidades.direcciones.*
+import src.enemigo.comportamiento.movimiento.*
+import src.elemento.muro.*
+
+class EnemigoDePrueba {
+  var property position
+  var property direccion = arriba
+
+  method cambiarDireccion(dir) {
+    direccion = dir
+  }
+}
+
+class ObjetivoDePrueba {
+  var property position
+}
+
+describe "Patrullar" {
+  test "avanza en la direccion horizontal inicial si puede moverse" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    new Patrullar().mover(enemigo, new Movimiento(), null)
+    assert.equals(game.at(6, 5), enemigo.position())
+  }
+
+  test "invierte la direccion al chocar contra un obstaculo" {
+    game.clear()
+    game.addVisual(new Muro(position = game.at(6, 5)))
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    new Patrullar().mover(enemigo, new Movimiento(), null)
+    assert.equals(game.at(4, 5), enemigo.position())
+  }
+
+  test "si ambos sentidos del eje estan bloqueados, gira al eje perpendicular" {
+    game.clear()
+    game.addVisual(new Muro(position = game.at(6, 5)))
+    game.addVisual(new Muro(position = game.at(4, 5)))
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    new Patrullar().mover(enemigo, new Movimiento(), null)
+    assert.equals(game.at(5, 4), enemigo.position())
+  }
+}
+
+describe "patrullarAleatorio" {
+  test "no se mueve si esta rodeado de obstaculos en las 4 direcciones" {
+    game.clear()
+    const posicion = game.at(5, 5)
+    [game.at(6, 5), game.at(4, 5), game.at(5, 6), game.at(5, 4)].forEach(
+      { p => game.addVisual(new Muro(position = p)) }
+    )
+    const enemigo = new EnemigoDePrueba(position = posicion)
+    patrullarAleatorio.mover(enemigo, new Movimiento(), null)
+    assert.equals(posicion, enemigo.position())
+  }
+}
+
+describe "perseguir" {
+  test "da un paso en x si el objetivo esta mas lejos en x que en y" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 3))
+    perseguir.mover(enemigo, new Movimiento(), objetivo)
+    assert.equals(game.at(1, 0), enemigo.position())
+  }
+
+  test "da un paso en y si ya esta alineado en x con el objetivo" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 0))
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 3))
+    perseguir.mover(enemigo, new Movimiento(), objetivo)
+    assert.equals(game.at(5, 1), enemigo.position())
+  }
+}
+
+describe "Investigar" {
+  test "si ya llego a la ultima posicion vista, se olvida del objetivo" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(5, 5))
+    new Investigar(ultimaPos = game.at(5, 5)).mover(enemigo, movimiento, null)
+    assert.notThat(movimiento.tieneUltima())
+  }
+
+  test "si todavia no llego, avanza hacia la ultima posicion vista y la sigue recordando" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(5, 0))
+    new Investigar(ultimaPos = game.at(5, 0)).mover(enemigo, movimiento, null)
+    assert.equals(game.at(1, 0), enemigo.position())
+    assert.that(movimiento.tieneUltima())
+  }
+}
+
+describe "Rotar" {
+  test "no rota la direccion antes de completar el ciclo de ticks" {
+    const rotar = new Rotar()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    (1 .. 5).forEach({ i => rotar.mover(enemigo, null, null) })
+    assert.equals(arriba, enemigo.direccion())
+  }
+
+  test "rota la direccion al completar el ciclo de ticks" {
+    const rotar = new Rotar()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    (1 .. 6).forEach({ i => rotar.mover(enemigo, null, null) })
+    assert.equals(izquierda, enemigo.direccion())
+  }
+}
+
+describe "Movimiento - estados y transiciones" {
+  test "arranca sin ultima posicion vista" {
+    assert.notThat(new Movimiento().tieneUltima())
+  }
+
+  test "verObjetivo registra la ultima posicion vista" {
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(3, 3))
+    assert.that(movimiento.tieneUltima())
+  }
+
+  test "verObjetivo hace que mover persiga la posicion actual del objetivo" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(5, 0))
+    const objetivo = new ObjetivoDePrueba(position = game.at(5, 0))
+    movimiento.mover(enemigo, objetivo)
+    assert.equals(game.at(1, 0), enemigo.position())
+  }
+
+  test "perderObjetivo sin haber visto antes vuelve al estado base" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    const movimiento = new Movimiento()
+    movimiento.perderObjetivo()
+    movimiento.mover(enemigo, null)
+    assert.equals(game.at(6, 5), enemigo.position())
+  }
+
+  test "perderObjetivo habiendo visto antes investiga la ultima posicion, ignorando al objetivo actual" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(5, 0))
+    movimiento.perderObjetivo()
+    const objetivoLejano = new ObjetivoDePrueba(position = game.at(0, 9))
+    movimiento.mover(enemigo, objetivoLejano)
+    assert.equals(game.at(1, 0), enemigo.position())
+  }
+
+  test "olvidar limpia la ultima posicion vista y vuelve al estado base" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 5))
+    const movimiento = new Movimiento()
+    movimiento.verObjetivo(game.at(0, 0))
+    movimiento.olvidar()
+    assert.notThat(movimiento.tieneUltima())
+    movimiento.mover(enemigo, null)
+    assert.equals(game.at(6, 5), enemigo.position())
+  }
+
+  test "puedeMoverse es false si hay un obstaculo en el destino" {
+    game.clear()
+    game.addVisual(new Muro(position = game.at(1, 0)))
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    assert.notThat(new Movimiento().puedeMoverse(enemigo, 1, 0))
+  }
+
+  test "puedeMoverse es true si el destino esta libre" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    assert.that(new Movimiento().puedeMoverse(enemigo, 1, 0))
+  }
+
+  test "investigar registra la posicion como ultima vista" {
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(3, 3))
+    assert.that(movimiento.tieneUltima())
+  }
+
+  test "investigar hace que mover avance hacia esa posicion, ignorando al objetivo actual" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(5, 0))
+    const objetivoLejano = new ObjetivoDePrueba(position = game.at(0, 9))
+    movimiento.mover(enemigo, objetivoLejano)
+    assert.equals(game.at(1, 0), enemigo.position())
+  }
+
+  test "al llegar a la posicion investigada, se olvida y vuelve al estado base" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 0))
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(5, 0))
+    movimiento.mover(enemigo, null)
+    assert.notThat(movimiento.tieneUltima())
+  }
+}
