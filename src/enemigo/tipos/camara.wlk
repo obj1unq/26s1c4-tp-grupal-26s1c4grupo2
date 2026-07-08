@@ -18,7 +18,7 @@ class Camara inherits Enemigo (
   override method reaccionar(objetivo) = self.puedeDetectar(objetivo)
   
   override method alContacto(objetivo) {
-    
+
   }
 }
 

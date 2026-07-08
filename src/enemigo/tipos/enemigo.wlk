@@ -58,6 +58,15 @@ class Enemigo {
   }
   
   method reaccionar(objetivo) = false
+
+  method puedeSerAlertado() = false
+
+  method alertar(posicion) {
+    if (self.puedeSerAlertado()) {
+      movimiento.investigar(posicion)
+      self.manejarAlarma()
+    }
+  }
   
   method mover(objetivo) {
     movimiento.mover(self, objetivo)

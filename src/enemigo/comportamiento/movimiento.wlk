@@ -92,13 +92,22 @@ class Movimiento {
     ultimaVista = pos
     estado = perseguir
   }
-  
+
   method perderObjetivo() {
     if (self.tieneUltima()) {
-      estado = new Investigar(ultimaPos = ultimaVista)
+      self.iniciarInvestigacion()
     } else {
       estado = estadoBase
     }
+  }
+
+  method investigar(posicion) {
+    ultimaVista = posicion
+    self.iniciarInvestigacion()
+  }
+
+  method iniciarInvestigacion() {
+    estado = new Investigar(ultimaPos = ultimaVista)
   }
   
   method olvidar() {

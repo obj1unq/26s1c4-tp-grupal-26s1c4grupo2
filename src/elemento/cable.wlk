@@ -5,9 +5,14 @@ class Cable {
   const property image = "cable.png"
   const property position
   const gestorEnemigos
+  const property rango = 6
   var activada = false
-  
+
   method manejarColisionConJugador(jugador) {
+    if (!activada) {
+      activada = true
+      gestorEnemigos.alertarCercaDe(position, rango)
+    }
   }
 }
 

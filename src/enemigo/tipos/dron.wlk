@@ -8,6 +8,8 @@ class Dron inherits Enemigo (
   movimiento = new Movimiento()
 ) {
   override method prefijoImagen() = "dron"
+
+  override method puedeSerAlertado() = true
 }
 
 object inicializadorDron {

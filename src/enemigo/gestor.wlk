@@ -26,6 +26,14 @@ class GestorEnemigos {
     pendientes = []
   }
   
+  method alertarCercaDe(posicion, rango) {
+    const candidatos = enemigos.filter(
+      { e => e.puedeSerAlertado() && (e.position().distance(posicion) <= rango) }
+    )
+    if (!candidatos.isEmpty())
+      candidatos.min({ e => e.position().distance(posicion) }).alertar(posicion)
+  }
+
   method puedeInvocar() = (enemigos.size() + pendientes.size()) < maxEnemigos
   
   method invocarCerca(posicion) {

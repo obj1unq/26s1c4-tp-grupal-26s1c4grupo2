@@ -174,4 +174,29 @@ describe "Movimiento - estados y transiciones" {
     const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
     assert.that(new Movimiento().puedeMoverse(enemigo, 1, 0))
   }
+
+  test "investigar registra la posicion como ultima vista" {
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(3, 3))
+    assert.that(movimiento.tieneUltima())
+  }
+
+  test "investigar hace que mover avance hacia esa posicion, ignorando al objetivo actual" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(0, 0))
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(5, 0))
+    const objetivoLejano = new ObjetivoDePrueba(position = game.at(0, 9))
+    movimiento.mover(enemigo, objetivoLejano)
+    assert.equals(game.at(1, 0), enemigo.position())
+  }
+
+  test "al llegar a la posicion investigada, se olvida y vuelve al estado base" {
+    game.clear()
+    const enemigo = new EnemigoDePrueba(position = game.at(5, 0))
+    const movimiento = new Movimiento()
+    movimiento.investigar(game.at(5, 0))
+    movimiento.mover(enemigo, null)
+    assert.notThat(movimiento.tieneUltima())
+  }
 }

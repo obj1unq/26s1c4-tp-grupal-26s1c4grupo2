@@ -79,6 +79,11 @@ describe "Camara - configuracion por defecto" {
     const camara = new Camara(position = game.at(0, 0))
     assert.notThat(camara.movimiento().tieneUltima())
   }
+
+  test "no puede ser alertada por un ruido" {
+    const camara = new Camara(position = game.at(0, 0))
+    assert.notThat(camara.puedeSerAlertado())
+  }
 }
 
 describe "Camara - deteccion de objetivo (no modifica el movimiento)" {
@@ -163,5 +168,21 @@ describe "Camara - contacto con el objetivo (sobreescrito como no-op)" {
     const camara = new Camara(position = game.at(5, 5))
     const objetivo = new ObjetivoDePrueba(position = game.at(1, 1))
     assert.doesNotThrowException({ camara.alContacto(objetivo) })
+  }
+}
+
+describe "Camara - alertar (no responde, no puede ser alertada)" {
+  test "alertar no modifica el movimiento de la camara" {
+    game.clear()
+    const camara = new Camara(position = game.at(0, 0))
+    camara.alertar(game.at(5, 0))
+    assert.notThat(camara.movimiento().tieneUltima())
+  }
+
+  test "alertar no modifica el icono de la camara" {
+    game.clear()
+    const camara = new Camara(position = game.at(0, 0))
+    camara.alertar(game.at(5, 0))
+    assert.equals("camara-arriba-.png", camara.image())
   }
 }
