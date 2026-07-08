@@ -2,7 +2,6 @@
 
 ## Equipo de desarrollo
 
-- Gonzalo Álvarez
 - Pablo Gilman
 - Rodrigo Domingorena
 
