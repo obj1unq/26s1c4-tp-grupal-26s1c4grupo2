@@ -11,6 +11,7 @@ import src.elemento.cable.inicializadorCable
 import src.elemento.muro.inicializadorMuro
 import src.elemento.puerta.inicializadorPuerta
 import src.elemento.servidor.inicializadorServidor
+import src.elemento.meta.inicializadorMeta
 
 const _ = object {
   method inicializar(nivel, x, y) {
@@ -43,3 +44,5 @@ const k = inicializadorMuro
 const l = inicializadorPuerta
 
 const m = inicializadorServidor
+
+const n = inicializadorMeta

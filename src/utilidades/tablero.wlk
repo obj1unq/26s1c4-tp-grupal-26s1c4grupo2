@@ -1,11 +1,17 @@
 import wollok.game.*
 
 object tablero {
-  method inicializar(nivel) {
-    const plano = nivel.plano()
+  method limpiar() {
+    game.clear()
+  }
 
-    game.height(plano.alto())
-    game.width(plano.ancho())
+  method inicializarFondo(fondo) {
+    game.height(fondo.alto())
+    game.width(fondo.ancho())
+    game.addVisual(fondo)
+  }
+
+  method inicializarNivel(nivel) {
     self.inicializarCeldas(nivel)
     self.traerAdelante(nivel.jugador())
   }

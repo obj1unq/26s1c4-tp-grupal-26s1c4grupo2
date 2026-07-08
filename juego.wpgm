@@ -1,5 +1,7 @@
 import src.juego.juego
 
 program Juego {
-  juego.iniciar("ByteMan")
+  game.title("ByteMan")  
+  juego.cargarPantallaInicial()
+  game.start()
 }

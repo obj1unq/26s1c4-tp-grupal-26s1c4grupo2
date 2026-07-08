@@ -2,16 +2,22 @@ import src.enemigo.gestor.*
 import src.utilidades.tablero.tablero
 
 class Nivel {
-  var property estado
+  const property gestorEnemigos = new GestorEnemigos(nivel = self)
+  const property siguiente = null
   const property plano
+  var property juego = null
   var property jugador = null
   var property puerta = null
-  const property gestorEnemigos = new GestorEnemigos()
+  var property estado
 
-  method inicializar() {
+  method cargar(_juego) {
+    juego = _juego
     gestorEnemigos.estado(estado)
-    game.ground(estado.ground())
-    tablero.inicializar(self)
+    tablero.inicializarNivel(self)
     game.onTick(500, "enemigos", { gestorEnemigos.actualizar(jugador) })
+  }
+
+  method ganar() {
+    juego.ganarNivel()
   }
 }
