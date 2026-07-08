@@ -37,10 +37,16 @@ class Enemigo {
     orientacion = dir
   }
   
+  method puedeDetectar(objetivo) = (!objetivo.estaEscondido()) && campoVision.puedeVerA(self, objetivo)
+
   method detectarObjetivo(objetivo) {
-    if ((!objetivo.estaEscondido()) && campoVision.puedeVerA(self, objetivo))
+    if (self.puedeDetectar(objetivo)) {
       movimiento.verObjetivo(objetivo.position())
-    else movimiento.perderObjetivo()
+      self.manejarAlarma()
+    } else {
+      movimiento.perderObjetivo()
+      if (!movimiento.tieneUltima()) self.manejarSigilo()
+    }
   }
   
   method actualizar(objetivo) {

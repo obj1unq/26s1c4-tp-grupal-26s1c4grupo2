@@ -11,12 +11,11 @@ class Camara inherits Enemigo (
   override method prefijoImagen() = "camara"
   
   override method detectarObjetivo(objetivo) {
-    
+    if (self.puedeDetectar(objetivo)) self.manejarAlarma()
+    else self.manejarSigilo()
   }
-  
-  override method reaccionar(
-    objetivo
-  ) = (!objetivo.estaEscondido()) && campoVision.puedeVerA(self, objetivo)
+
+  override method reaccionar(objetivo) = self.puedeDetectar(objetivo)
   
   override method alContacto(objetivo) {
     
