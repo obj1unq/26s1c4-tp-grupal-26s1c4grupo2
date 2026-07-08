@@ -68,7 +68,7 @@ Es un sistema automatizado que resguarda la seguridad de "NexCorp". Su principal
 
     ![Cámara de Seguridad](./assets/camara-derecha-sigilo.png "Cámara de Seguridad mirando a la derecha") ![Cámara de Seguridad](./assets/camara-abajo-sigilo.png "Cámara de Seguridad mirando abajo") ![Cámara de Seguridad](./assets/camara-izquierda-sigilo.png "Cámara de Seguridad mirando a la izquierda") ![Cámara de Seguridad](./assets/camara-arriba-sigilo.png "Cámara de Seguridad mirando arriba")
     
-    Es estática, pero rota sobre su eje 90 grados cada cierto intervalo de tiempo. Tiene un campo de visión de 4 celdas.
+    Es estática, pero rota sobre su eje 90 grados cada cierto intervalo de tiempo. Tiene un campo de visión de 4 celdas. No persigue al infiltrado directamente: si lo detecta, invoca a un Sabueso Cibernético cerca de su posición para que se encargue de perseguirlo.
 
 
 * ##### **Sabueso Cibernético**
@@ -109,7 +109,7 @@ Son los elementos que conforman y están presentes en las instalaciones de la em
     
     ![Cables pelados](./assets/cable.png "Cables pelados")
     
-    Es atravesable; si *ByteMan* lo atraviesa, se produce un ruido de cortocicuito que alerta a algún enemigo cercano, el cual se dirije hacia la zona para investigarlo.
+    Es atravesable; si *ByteMan* lo atraviesa, se produce un ruido de cortocicuito que alerta al Dron cercano (las Cámaras y los Sabuesos no reaccionan a este ruido), el cual se dirije hacia la zona para investigarlo. Cada cable solo puede activarse una vez.
 
 * ##### **Puerta Blindada** 
     

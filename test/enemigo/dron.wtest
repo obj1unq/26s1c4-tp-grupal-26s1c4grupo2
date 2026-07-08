@@ -83,9 +83,9 @@ describe "Dron - configuracion por defecto" {
     assert.that(dron.esAtravesable())
   }
 
-  test "el campo de vision es semicircular con radio 6" {
+  test "el campo de vision es semicircular con radio 2" {
     const dron = new Dron(position = game.at(0, 0))
-    assert.equals(6, dron.campoVision().radio())
+    assert.equals(2, dron.campoVision().radio())
   }
 
   test "el movimiento arranca sin objetivo previsto" {
@@ -117,7 +117,7 @@ describe "Dron - deteccion de objetivo" {
   test "si el objetivo esta dentro del campo de vision, queda registrado como visto" {
     game.clear()
     const dron = new Dron(position = game.at(10, 10))
-    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 12))
     dron.detectarObjetivo(objetivo)
     assert.that(dron.movimiento().tieneUltima())
   }
@@ -133,7 +133,7 @@ describe "Dron - deteccion de objetivo" {
   test "si el objetivo es detectado, el icono cambia a alarma" {
     game.clear()
     const dron = new Dron(position = game.at(10, 10))
-    const objetivo = new ObjetivoDePrueba(position = game.at(10, 13))
+    const objetivo = new ObjetivoDePrueba(position = game.at(10, 12))
     dron.detectarObjetivo(objetivo)
     assert.equals("dron-arriba-alarma.png", dron.image())
   }
@@ -141,8 +141,8 @@ describe "Dron - deteccion de objetivo" {
   test "si el objetivo se esconde pero se recuerda su ultima posicion, el icono se mantiene en alarma" {
     game.clear()
     const dron = new Dron(position = game.at(10, 10))
-    const visible = new ObjetivoDePrueba(position = game.at(10, 13))
-    const escondido = new ObjetivoDePrueba(position = game.at(10, 13), escondido = true)
+    const visible = new ObjetivoDePrueba(position = game.at(10, 12))
+    const escondido = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
     dron.detectarObjetivo(visible)
     dron.detectarObjetivo(escondido)
     assert.equals("dron-arriba-alarma.png", dron.image())
@@ -151,8 +151,8 @@ describe "Dron - deteccion de objetivo" {
   test "una vez que el movimiento olvida al objetivo, el icono vuelve a sigilo" {
     game.clear()
     const dron = new Dron(position = game.at(10, 10))
-    const visible = new ObjetivoDePrueba(position = game.at(10, 13))
-    const escondido = new ObjetivoDePrueba(position = game.at(10, 13), escondido = true)
+    const visible = new ObjetivoDePrueba(position = game.at(10, 12))
+    const escondido = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
     dron.detectarObjetivo(visible)
     dron.movimiento().olvidar()
     dron.detectarObjetivo(escondido)

@@ -4,7 +4,7 @@ import src.enemigo.comportamiento.movimiento.*
 import src.enemigo.comportamiento.vision.*
 
 class Dron inherits Enemigo (
-  campoVision = new VisionSemicircular(radio = 6),
+  campoVision = new VisionSemicircular(radio = 2),
   movimiento = new Movimiento()
 ) {
   override method prefijoImagen() = "dron"

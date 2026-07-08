@@ -70,9 +70,9 @@ describe "Camara - configuracion por defecto" {
     assert.notThat(camara.esAtravesable())
   }
 
-  test "el campo de vision es lineal con rango 6" {
+  test "el campo de vision es lineal con rango 4" {
     const camara = new Camara(position = game.at(0, 0))
-    assert.equals(6, camara.campoVision().rango())
+    assert.equals(4, camara.campoVision().rango())
   }
 
   test "el movimiento arranca sin objetivo previsto" {

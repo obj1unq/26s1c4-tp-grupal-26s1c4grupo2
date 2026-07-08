@@ -5,7 +5,7 @@ import src.enemigo.comportamiento.vision.*
 
 class Camara inherits Enemigo (
   esAtravesable = false,
-  campoVision = new VisionLineal(rango = 6),
+  campoVision = new VisionLineal(rango = 4),
   movimiento = new Movimiento(estadoBase = new Rotar())
 ) {
   override method prefijoImagen() = "camara"
