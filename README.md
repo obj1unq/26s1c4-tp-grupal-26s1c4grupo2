@@ -23,9 +23,9 @@ El sigilo no es más que una asimetría de información, en donde el jugador ve 
 
 * **Estado de Alarma:** El entorno es hostil. Ahora, los enemigos persiguen de forma activa al infiltrado detectado por alguno de ellos.
 
-* **Estado de Reinicio:**: Es un entorno inducido por la utilización del [ítem PEM del inventario de *ByteMan*](#32-el-inventario). En él, se paraliza el patrullaje o persecución de los enemigos por un lapso de 5 segundos, dejándolos "congelados" y "fuera de servicio" en la grilla.
+* **Estado de Reinicio:**: Es un entorno en el que se paraliza el patrullaje o persecución de los enemigos por un lapso de 5 segundos, dejándolos "congelados" y "fuera de servicio" en la grilla.
 
-### 3. *ByteMan* y su inventario
+### 3. *ByteMan*
 
 > Avatar preliminar para representar a *ByteMan*
 
@@ -33,28 +33,7 @@ El sigilo no es más que una asimetría de información, en donde el jugador ve 
 
 El personaje principal se mueve de a una celda a la vez utilizando las flechas direccionales.
 
-#### 3.2. El inventario
-
-El inventario de *ByteMan* son objetos consumibles que sirven como armas o defensas a la hora de enfrentarse a sus enemigos.
-
-* ##### **Pulso Electromagnético (PEM)** 
-
-    ![PEM](./assets/pem.png "Pulso Electromagnético") 
-        
-    Es defensivo y de un solo uso. Cambia el estado del entorno temporalmente al Estado de Reinicio. Sirve para escapar o esconderse para no ser detectado o atrapado.
-
-
-* ##### **Virus Troyano** 
-
-    ![Virus Troyano](./assets/virus.png "Virus Troyano") 
-
-    Es ofensivo y de un solo uso. Si *ByteMan* lo usa al lado de algún/nos enemigos, estos mueren.
-
 ### 4. El sistema de seguridad Argus
-
-> Avatares preliminares para representar a los enemigos de *ByteMan* y sus campos de visión
-
-![Dron](./assets/readme/dron-vision.png "Dron con su campo de visión") ![Cámara](./assets/readme/camara-vision.png "Cámara con su campo de visión") ![Sabueso](./assets/readme/sabueso-vision.png "Sabueso con su campo de visión")
 
 Es un sistema automatizado que resguarda la seguridad de "NexCorp". Su principal función es patrullar las instalaciones de la empresa y, de ser necesario, perseguir y atrapar a cualquier infiltrado en ellas.
 
