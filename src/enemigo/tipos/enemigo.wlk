@@ -55,7 +55,6 @@ class Enemigo {
     const posAnterior = position
     self.mover(objetivo)
     self.actualizarMirada(posAnterior)
-    self.alContacto(objetivo)
   }
   
   method reaccionar(objetivo) = false
@@ -73,11 +72,7 @@ class Enemigo {
     movimiento.mover(self, objetivo)
   }
   
-  method alContacto(objetivo) {
-    if ((position.x() == objetivo.position().x()) && (position.y() == objetivo.position().y())) {
-      nivel.juego().perder()
-    }
-  }
+  method alContacto(objetivo) {}
   
   method actualizarMirada(posAnterior) {
     const ddx = position.x() - posAnterior.x()
@@ -92,6 +87,6 @@ class Enemigo {
   }
   
   method manejarColisionConJugador(jugador) {
-    
+    nivel.juego().perder()
   }
 }
