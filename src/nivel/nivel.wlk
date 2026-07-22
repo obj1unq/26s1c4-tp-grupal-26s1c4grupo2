@@ -12,6 +12,7 @@ class Nivel {
 
   method cargar(_juego) {
     juego = _juego
+    gestorEnemigos.limpiar()
     gestorEnemigos.estado(estado)
     tablero.inicializarNivel(self)
     game.onTick(500, "enemigos", { gestorEnemigos.actualizar(jugador) })
@@ -19,5 +20,9 @@ class Nivel {
 
   method ganar() {
     juego.ganarNivel()
+  }
+
+  method perder() {
+    juego.perder()
   }
 }

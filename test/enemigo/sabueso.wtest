@@ -15,37 +15,41 @@ class EstadoDePrueba {
   }
 }
 
+object nivelDePrueba {
+  method perder() {}
+}
+
 describe "Sabueso - imagen y estado visual" {
   test "el prefijo de imagen es sabueso" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.equals("sabueso", sabueso.prefijoImagen())
   }
 
   test "la imagen por defecto combina prefijo, orientacion y sin estado" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.equals("sabueso-arriba-.png", sabueso.image())
   }
 
   test "manejarSigilo cambia el estado de la imagen" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.manejarSigilo()
     assert.equals("sabueso-arriba-sigilo.png", sabueso.image())
   }
 
   test "manejarAlarma cambia el estado de la imagen" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.manejarAlarma()
     assert.equals("sabueso-arriba-alarma.png", sabueso.image())
   }
 
   test "manejarReinicio cambia el estado de la imagen" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.manejarReinicio()
     assert.equals("sabueso-arriba-reinicio.png", sabueso.image())
   }
 
   test "manejarEstado delega en el afectar del estado recibido" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.manejarEstado(new EstadoDePrueba())
     assert.equals("sabueso-arriba-alarma.png", sabueso.image())
   }
@@ -53,24 +57,24 @@ describe "Sabueso - imagen y estado visual" {
 
 describe "Sabueso - direccion" {
   test "la orientacion por defecto es arriba" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.equals(arriba, sabueso.direccion())
   }
 
   test "cambiarDireccion actualiza la orientacion" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.cambiarDireccion(derecha)
     assert.equals(derecha, sabueso.direccion())
   }
 
   test "actualizarMirada orienta al sabueso hacia donde se movio" {
-    const sabueso = new Sabueso(position = game.at(3, 0))
+    const sabueso = new Sabueso(position = game.at(3, 0), nivel = nivelDePrueba)
     sabueso.actualizarMirada(game.at(0, 0))
     assert.equals(derecha, sabueso.direccion())
   }
 
   test "actualizarMirada no cambia la orientacion si no hubo movimiento" {
-    const sabueso = new Sabueso(position = game.at(2, 2))
+    const sabueso = new Sabueso(position = game.at(2, 2), nivel = nivelDePrueba)
     sabueso.cambiarDireccion(izquierda)
     sabueso.actualizarMirada(game.at(2, 2))
     assert.equals(izquierda, sabueso.direccion())
@@ -79,27 +83,27 @@ describe "Sabueso - direccion" {
 
 describe "Sabueso - configuracion por defecto" {
   test "es atravesable" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.that(sabueso.esAtravesable())
   }
 
-  test "el campo de vision es semicircular con radio 1" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
-    assert.equals(1, sabueso.campoVision().radio())
+  test "el campo de vision es semicircular con radio 2" {
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
+    assert.equals(2, sabueso.campoVision().radio())
   }
 
   test "el movimiento arranca sin objetivo previsto" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.notThat(sabueso.movimiento().tieneUltima())
   }
 
   test "no puede ser alertado por un ruido" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     assert.notThat(sabueso.puedeSerAlertado())
   }
 
   test "reaccionar siempre devuelve false, incluso con el objetivo a la vista" {
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(0, 3))
     assert.notThat(sabueso.reaccionar(objetivo))
   }
@@ -108,7 +112,7 @@ describe "Sabueso - configuracion por defecto" {
 describe "Sabueso - deteccion de objetivo" {
   test "si el objetivo esta escondido, no queda registrado como visto" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(10, 12), escondido = true)
     sabueso.detectarObjetivo(objetivo)
     assert.notThat(sabueso.movimiento().tieneUltima())
@@ -116,7 +120,7 @@ describe "Sabueso - deteccion de objetivo" {
 
   test "si el objetivo esta dentro del campo de vision, queda registrado como visto" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(10, 11))
     sabueso.detectarObjetivo(objetivo)
     assert.that(sabueso.movimiento().tieneUltima())
@@ -124,7 +128,7 @@ describe "Sabueso - deteccion de objetivo" {
 
   test "si el objetivo esta fuera de rango, no queda registrado como visto" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(10, 18))
     sabueso.detectarObjetivo(objetivo)
     assert.notThat(sabueso.movimiento().tieneUltima())
@@ -132,7 +136,7 @@ describe "Sabueso - deteccion de objetivo" {
 
   test "si el objetivo es detectado, el icono cambia a alarma" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(10, 11))
     sabueso.detectarObjetivo(objetivo)
     assert.equals("sabueso-arriba-alarma.png", sabueso.image())
@@ -140,7 +144,7 @@ describe "Sabueso - deteccion de objetivo" {
 
   test "si el objetivo se esconde pero se recuerda su ultima posicion, el icono se mantiene en alarma" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const visible = new ObjetivoDePrueba(position = game.at(10, 11))
     const escondido = new ObjetivoDePrueba(position = game.at(10, 11), escondido = true)
     sabueso.detectarObjetivo(visible)
@@ -150,7 +154,7 @@ describe "Sabueso - deteccion de objetivo" {
 
   test "una vez que el movimiento olvida al objetivo, el icono vuelve a sigilo" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(10, 10))
+    const sabueso = new Sabueso(position = game.at(10, 10), nivel = nivelDePrueba)
     const visible = new ObjetivoDePrueba(position = game.at(10, 11))
     const escondido = new ObjetivoDePrueba(position = game.at(10, 11), escondido = true)
     sabueso.detectarObjetivo(visible)
@@ -162,13 +166,13 @@ describe "Sabueso - deteccion de objetivo" {
 
 describe "Sabueso - contacto con el objetivo" {
   test "si coincide la posicion con el objetivo, no lanza una excepcion" {
-    const sabueso = new Sabueso(position = game.at(5, 5))
+    const sabueso = new Sabueso(position = game.at(5, 5), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(5, 5))
     assert.doesNotThrowException({ sabueso.alContacto(objetivo) })
   }
 
   test "si no coincide la posicion, no pasa nada" {
-    const sabueso = new Sabueso(position = game.at(5, 5))
+    const sabueso = new Sabueso(position = game.at(5, 5), nivel = nivelDePrueba)
     const objetivo = new ObjetivoDePrueba(position = game.at(1, 1))
     assert.doesNotThrowException({ sabueso.alContacto(objetivo) })
   }
@@ -177,14 +181,14 @@ describe "Sabueso - contacto con el objetivo" {
 describe "Sabueso - alertar (no responde, no puede ser alertado)" {
   test "alertar no modifica el movimiento del sabueso" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.alertar(game.at(5, 0))
     assert.notThat(sabueso.movimiento().tieneUltima())
   }
 
   test "alertar no modifica el icono del sabueso" {
     game.clear()
-    const sabueso = new Sabueso(position = game.at(0, 0))
+    const sabueso = new Sabueso(position = game.at(0, 0), nivel = nivelDePrueba)
     sabueso.alertar(game.at(5, 0))
     assert.equals("sabueso-arriba-.png", sabueso.image())
   }

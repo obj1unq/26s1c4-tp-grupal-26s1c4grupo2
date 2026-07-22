@@ -4,7 +4,7 @@ import src.enemigo.comportamiento.movimiento.*
 import src.enemigo.comportamiento.vision.*
 
 class Dron inherits Enemigo (
-  campoVision = new VisionSemicircular(radio = 2),
+  campoVision = new VisionSemicircular(radio = 4),
   movimiento = new Movimiento()
 ) {
   override method prefijoImagen() = "dron"
@@ -14,6 +14,6 @@ class Dron inherits Enemigo (
 
 object inicializadorDron {
   method inicializar(nivel, x, y) {
-    nivel.gestorEnemigos().agregar(new Dron(position = game.at(x, y)))
+    nivel.gestorEnemigos().agregar(new Dron(position = game.at(x, y), nivel = nivel))
   }
 }

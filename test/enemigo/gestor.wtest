@@ -4,12 +4,16 @@ import src.enemigo.tipos.dron.*
 import src.enemigo.tipos.camara.*
 import src.enemigo.tipos.sabueso.*
 
+object nivelDePrueba {
+  method perder() {}
+}
+
 describe "GestorEnemigos - alertarCercaDe" {
   test "alerta al dron mas cercano a la posicion dada, dentro del rango" {
     game.clear()
-    const gestor = new GestorEnemigos()
-    const cercano = new Dron(position = game.at(5, 5))
-    const lejano = new Dron(position = game.at(20, 20))
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const cercano = new Dron(position = game.at(5, 5), nivel = nivelDePrueba)
+    const lejano = new Dron(position = game.at(20, 20), nivel = nivelDePrueba)
     gestor.agregar(cercano)
     gestor.agregar(lejano)
 
@@ -21,8 +25,8 @@ describe "GestorEnemigos - alertarCercaDe" {
 
   test "no alerta a nadie si el dron mas cercano igual esta fuera de rango" {
     game.clear()
-    const gestor = new GestorEnemigos()
-    const lejano = new Dron(position = game.at(20, 20))
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const lejano = new Dron(position = game.at(20, 20), nivel = nivelDePrueba)
     gestor.agregar(lejano)
 
     gestor.alertarCercaDe(game.at(6, 5), 6)
@@ -31,15 +35,15 @@ describe "GestorEnemigos - alertarCercaDe" {
   }
 
   test "no hace nada si todavia no hay enemigos agregados" {
-    const gestor = new GestorEnemigos()
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
     assert.doesNotThrowException({ gestor.alertarCercaDe(game.at(0, 0), 6) })
   }
 
   test "ignora a una camara mas cercana y alerta al dron, aunque este mas lejos" {
     game.clear()
-    const gestor = new GestorEnemigos()
-    const camara = new Camara(position = game.at(5, 5))
-    const dron = new Dron(position = game.at(9, 5))
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const camara = new Camara(position = game.at(5, 5), nivel = nivelDePrueba)
+    const dron = new Dron(position = game.at(9, 5), nivel = nivelDePrueba)
     gestor.agregar(camara)
     gestor.agregar(dron)
 
@@ -50,9 +54,9 @@ describe "GestorEnemigos - alertarCercaDe" {
 
   test "ignora a un sabueso mas cercano y alerta al dron, aunque este mas lejos" {
     game.clear()
-    const gestor = new GestorEnemigos()
-    const sabueso = new Sabueso(position = game.at(5, 5))
-    const dron = new Dron(position = game.at(9, 5))
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const sabueso = new Sabueso(position = game.at(5, 5), nivel = nivelDePrueba)
+    const dron = new Dron(position = game.at(9, 5), nivel = nivelDePrueba)
     gestor.agregar(sabueso)
     gestor.agregar(dron)
 
@@ -63,10 +67,35 @@ describe "GestorEnemigos - alertarCercaDe" {
 
   test "no alerta a nadie si el unico enemigo cercano es una camara" {
     game.clear()
-    const gestor = new GestorEnemigos()
-    const camara = new Camara(position = game.at(5, 5))
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const camara = new Camara(position = game.at(5, 5), nivel = nivelDePrueba)
     gestor.agregar(camara)
 
     assert.doesNotThrowException({ gestor.alertarCercaDe(game.at(6, 5), 6) })
+  }
+}
+
+describe "GestorEnemigos - limpiar" {
+  test "luego de limpiar no quedan referencias a los enemigos agregados" {
+    game.clear()
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba)
+    const dron = new Dron(position = game.at(5, 5), nivel = nivelDePrueba)
+    gestor.agregar(dron)
+
+    gestor.limpiar()
+    gestor.alertarCercaDe(game.at(6, 5), 6)
+
+    assert.notThat(dron.movimiento().tieneUltima())
+  }
+
+  test "luego de limpiar puede volver a invocar hasta el maximo de enemigos" {
+    game.clear()
+    const gestor = new GestorEnemigos(nivel = nivelDePrueba, maxEnemigos = 1)
+    gestor.agregar(new Dron(position = game.at(5, 5), nivel = nivelDePrueba))
+    assert.notThat(gestor.puedeInvocar())
+
+    gestor.limpiar()
+
+    assert.that(gestor.puedeInvocar())
   }
 }

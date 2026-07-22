@@ -5,7 +5,7 @@ import src.enemigo.comportamiento.vision.*
 
 class Camara inherits Enemigo (
   esAtravesable = false,
-  campoVision = new VisionLineal(rango = 4),
+  campoVision = new VisionLineal(rango = 8),
   movimiento = new Movimiento(estadoBase = new Rotar())
 ) {
   override method prefijoImagen() = "camara"
@@ -24,6 +24,6 @@ class Camara inherits Enemigo (
 
 object inicializadorCamara {
   method inicializar(nivel, x, y) {
-    nivel.gestorEnemigos().agregar(new Camara(position = game.at(x, y)))
+    nivel.gestorEnemigos().agregar(new Camara(position = game.at(x, y), nivel = nivel))
   }
 }

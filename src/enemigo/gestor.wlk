@@ -10,9 +10,13 @@ class GestorEnemigos {
   var property estado = null
   const nivel
   
+  method limpiar() {
+    enemigos = []
+    pendientes = []
+  }
+
   method agregar(enemigo) {
     if (estado !== null) enemigo.manejarEstado(estado)
-    enemigo.nivel(nivel)
     enemigos.add(enemigo)
     game.addVisual(enemigo)
   }
@@ -41,7 +45,7 @@ class GestorEnemigos {
   method invocarCerca(posicion) {
     if (self.puedeInvocar()) {
       const destino = self.celdaLibreCercaDe(posicion)
-      if (destino !== null) pendientes.add(new Sabueso(position = destino))
+      if (destino !== null) pendientes.add(new Sabueso(position = destino, nivel = nivel))
     }
   }
   
